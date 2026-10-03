@@ -241,7 +241,7 @@ include(":app")`
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Grandmaster Chess"
+        android:label="Learn Chess: Tips, Puzzles & Play"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Grandmaster">
@@ -271,7 +271,8 @@ include(":app")`
       // README
       zip.file(
         'README.md',
-        `# Grandmaster: Offline Android Chess Trainer
+        `# Learn Chess: Tips, Puzzles & Play
+Offline Android Chess Trainer
 
 Production-grade offline native Android chess learning and training application built with Jetpack Compose, Material 3, Stockfish engine, and Google Mobile Ads SDK.
 
@@ -294,7 +295,7 @@ Production-grade offline native Android chess learning and training application 
       const url = URL.createObjectURL(content);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'GrandmasterChess-AndroidStudioProject.zip';
+      a.download = 'LearnChess-TipsPuzzlesPlay-AndroidStudioProject.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

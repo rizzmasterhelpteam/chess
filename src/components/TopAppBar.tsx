@@ -29,14 +29,14 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
     <header className="w-full bg-[#0b0e13]/95 backdrop-blur-md border-b border-white/[0.08] px-4 sm:px-6 py-3 flex items-center justify-between select-none z-30">
       {/* Zone 1: Brand Wordmark (Single clean line) */}
       <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-md bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-sm">
+        <div className="w-7 h-7 rounded-md bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-sm shrink-0">
           ♚
         </div>
-        <div className="flex items-baseline gap-2">
-          <span className="font-brand text-base sm:text-lg font-bold text-white tracking-wide">
-            Learn Chess
+        <div className="flex items-baseline gap-1.5 overflow-hidden">
+          <span className="font-brand text-sm sm:text-base md:text-lg font-bold text-white tracking-wide whitespace-nowrap">
+            Learn Chess:
           </span>
-          <span className="text-[11px] text-amber-300/80 font-medium hidden sm:inline">
+          <span className="text-[11px] sm:text-xs text-amber-300 font-semibold tracking-normal whitespace-nowrap">
             Tips, Puzzles & Play
           </span>
         </div>

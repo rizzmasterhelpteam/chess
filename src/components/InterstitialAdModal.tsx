@@ -57,7 +57,7 @@ export const InterstitialAdModal: React.FC = () => {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">
           ♟️
         </div>
-        <h3 className="text-xl font-bold text-white mb-2">Grandmaster Chess Training</h3>
+        <h3 className="text-xl font-bold text-white mb-2">Learn Chess: Tips, Puzzles & Play</h3>
         <p className="text-sm text-neutral-400 mb-6">
           Level up your tactical vision with offline puzzles, comprehensive lessons, and Stockfish AI.
         </p>
