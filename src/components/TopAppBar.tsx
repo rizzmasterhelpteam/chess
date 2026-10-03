@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Settings, BarChart2, FolderArchive, BookOpen, Puzzle, Swords } from 'lucide-react';
+import { Flame, Settings, BarChart2, BookOpen, Puzzle, Swords } from 'lucide-react';
 import { MainTab } from './BottomNavBar';
 
 interface TopAppBarProps {
@@ -8,7 +8,6 @@ interface TopAppBarProps {
   streak: number;
   onOpenSettings: () => void;
   onOpenStats: () => void;
-  onOpenAndroidExport: () => void;
 }
 
 export const TopAppBar: React.FC<TopAppBarProps> = ({
@@ -17,7 +16,6 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
   streak,
   onOpenSettings,
   onOpenStats,
-  onOpenAndroidExport,
 }) => {
   const navTabs: { id: MainTab; label: string; icon: React.ReactNode }[] = [
     { id: 'learn', label: 'Curriculum', icon: <BookOpen className="w-3.5 h-3.5" /> },
@@ -76,16 +74,6 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
         </div>
 
         <div className="h-4 w-[1px] bg-white/[0.1] hidden sm:block" />
-
-        {/* Android Export */}
-        <button
-          onClick={onOpenAndroidExport}
-          title="Export Android Studio Project & APK"
-          className="px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.08] text-neutral-300 hover:text-white hover:bg-white/[0.08] transition flex items-center gap-1.5 text-xs font-medium"
-        >
-          <FolderArchive className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="hidden lg:inline">Android Export</span>
-        </button>
 
         {/* Statistics */}
         <button

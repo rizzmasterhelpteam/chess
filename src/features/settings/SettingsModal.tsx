@@ -3,8 +3,6 @@ import {
   userProgressRepo,
   BoardThemeId,
 } from '../../data/userProgressRepository';
-import { dailyCycleManager } from '../../data/dailyCycleManager';
-import { adsManager } from '../../ads/AdsManager';
 import {
   X,
   Volume2,
@@ -24,7 +22,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   onRefreshState,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'settings' | 'licenses' | 'debug'>('settings');
+  const [activeSubTab, setActiveSubTab] = useState<'settings' | 'licenses'>('settings');
   const [confirmResetType, setConfirmResetType] = useState<'puzzles' | 'bots' | null>(null);
 
   const progressData = userProgressRepo.getData();
@@ -72,16 +70,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               }`}
             >
               Licenses
-            </button>
-            <button
-              onClick={() => setActiveSubTab('debug')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                activeSubTab === 'debug'
-                  ? 'bg-white/[0.1] text-white shadow'
-                  : 'text-neutral-400 hover:text-white'
-              }`}
-            >
-              Tools
             </button>
           </div>
           <button
@@ -230,12 +218,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeSubTab === 'licenses' && (
             <div className="space-y-4 text-xs text-neutral-300 leading-relaxed">
               <div className="bg-[#0c0e12] p-4 rounded-xl border border-white/[0.08]">
-                <h4 className="font-bold text-white mb-1.5">Stockfish Chess Engine</h4>
+                <h4 className="font-bold text-white mb-1.5">Local Chess Bot</h4>
                 <p className="text-neutral-400 text-xs mb-2">
-                  Stockfish is distributed under the GNU General Public License v3.0 (GPL-3.0). Bundled locally for zero-latency, private offline evaluation and play.
+                  This build uses an internal JavaScript chess bot with legal move validation and depth-limited evaluation. Stockfish is not bundled in this build.
                 </p>
                 <span className="text-[11px] text-[#e5c158] font-mono">
-                  GPL-3.0 License · Copyright (C) Stockfish Developers
+                  No third-party engine attribution required
                 </span>
               </div>
 
@@ -248,49 +236,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           )}
 
-          {activeSubTab === 'debug' && (
-            <div className="space-y-4">
-              <div className="bg-[#0c0e12] p-4 rounded-xl border border-white/[0.08] text-xs text-neutral-300">
-                <h4 className="font-bold text-[#e5c158] mb-2">Daily Puzzle Cycle Testing</h4>
-                <div className="flex gap-2 mb-2">
-                  <button
-                    onClick={() => {
-                      dailyCycleManager.debugAdvanceDate(1);
-                      onRefreshState();
-                    }}
-                    className="flex-1 py-2 bg-white/[0.08] hover:bg-white/[0.12] rounded-lg text-white font-semibold transition"
-                  >
-                    Advance +1 Day
-                  </button>
-                  <button
-                    onClick={() => {
-                      dailyCycleManager.debugAdvanceDate(7);
-                      onRefreshState();
-                    }}
-                    className="flex-1 py-2 bg-white/[0.08] hover:bg-white/[0.12] rounded-lg text-white font-semibold transition"
-                  >
-                    Advance +7 Days
-                  </button>
-                </div>
-                <p className="text-[11px] text-neutral-400">
-                  Tests non-repeating calendar day rotation through the 3,000 puzzle pool.
-                </p>
-              </div>
-
-              <div className="bg-[#0c0e12] p-4 rounded-xl border border-white/[0.08] text-xs text-neutral-300">
-                <h4 className="font-bold text-[#e5c158] mb-2">AdMob Interstitial Break</h4>
-                <button
-                  onClick={() => {
-                    adsManager.checkAndShowInterstitial('manual_debug');
-                    onClose();
-                  }}
-                  className="w-full py-2 bg-white/[0.08] hover:bg-white/[0.12] text-white rounded-lg font-semibold transition"
-                >
-                  Simulate Natural Break Ad
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Confirmation Modal */}

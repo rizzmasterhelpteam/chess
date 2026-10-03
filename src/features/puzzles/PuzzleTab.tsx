@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Square, Move } from 'chess.js';
 import {
   Puzzle,
@@ -39,12 +39,24 @@ export const PuzzleTab: React.FC = () => {
   const [isOpponentThinking, setIsOpponentThinking] = useState<boolean>(false);
   const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>('white');
   const [activePermanentDifficulty, setActivePermanentDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
+  const responseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const puzzleSessionRef = useRef(0);
 
   const progressData = userProgressRepo.getData();
   const dailyData = dailyCycleManager.getTodayPuzzles();
   const dailyStats = dailyCycleManager.getStats();
 
+  const cancelPendingResponse = () => {
+    if (responseTimeoutRef.current !== null) {
+      clearTimeout(responseTimeoutRef.current);
+      responseTimeoutRef.current = null;
+    }
+    puzzleSessionRef.current += 1;
+    setIsOpponentThinking(false);
+  };
+
   const startPuzzle = (puzzle: Puzzle) => {
+    cancelPendingResponse();
     setPlayingPuzzle(puzzle);
     const service = new ChessRulesService(puzzle.fen);
     setChessService(service);
@@ -106,7 +118,10 @@ export const PuzzleTab: React.FC = () => {
 
           if (nextStep < playingPuzzle.solution.length) {
             setIsOpponentThinking(true);
-            setTimeout(() => {
+            const sessionId = puzzleSessionRef.current;
+            responseTimeoutRef.current = setTimeout(() => {
+              responseTimeoutRef.current = null;
+              if (sessionId !== puzzleSessionRef.current) return;
               const oppMove = playingPuzzle.solution[nextStep];
               const oppRes = chessService.makeMove(oppMove.from as Square, oppMove.to as Square, oppMove.promotion);
               if (oppRes.success) {
@@ -194,6 +209,16 @@ export const PuzzleTab: React.FC = () => {
     startPuzzle(playingPuzzle);
   };
 
+  const stopPuzzle = () => {
+    cancelPendingResponse();
+    setPlayingPuzzle(null);
+    setChessService(null);
+    setSelectedSquare(null);
+    setLegalMoves([]);
+  };
+
+  useEffect(() => cancelPendingResponse, []);
+
   const handleNextPermanentPuzzle = () => {
     if (!playingPuzzle) return;
     const diff = playingPuzzle.difficulty;
@@ -227,7 +252,7 @@ export const PuzzleTab: React.FC = () => {
         {/* Header Bar */}
         <div className="w-full flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
           <button
-            onClick={() => setPlayingPuzzle(null)}
+            onClick={stopPuzzle}
             className="flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Puzzles
@@ -351,7 +376,7 @@ export const PuzzleTab: React.FC = () => {
               </button>
             ) : (
               <button
-                onClick={() => setPlayingPuzzle(null)}
+                onClick={stopPuzzle}
                 className="w-full py-2.5 px-4 bg-[#e5c158] hover:bg-[#d4af37] text-black font-bold text-xs rounded-lg transition"
               >
                 Return to Daily Selection

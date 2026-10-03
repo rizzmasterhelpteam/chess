@@ -34,7 +34,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug") // Debug signing for demo
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -88,7 +87,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Google Mobile Ads (AdMob)
-    implementation(libs.play-services.ads)
+    implementation(libs.play.services.ads)
 
     // Testing
     testImplementation(libs.junit)

@@ -6,7 +6,6 @@ import { InterstitialAdModal } from './components/InterstitialAdModal';
 import { OnboardingModal } from './components/OnboardingModal';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { StatisticsModal } from './features/settings/StatisticsModal';
-import { AndroidProjectExportModal } from './components/AndroidProjectExportModal';
 
 import { LearnTab } from './features/learn/LearnTab';
 import { PuzzleTab } from './features/puzzles/PuzzleTab';
@@ -19,7 +18,6 @@ export function App() {
   const [currentTab, setCurrentTab] = useState<MainTab>('learn');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
-  const [isExportOpen, setIsExportOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const progressData = userProgressRepo.getData();
@@ -42,7 +40,6 @@ export function App() {
           streak={dailyStats.currentStreak}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenStats={() => setIsStatsOpen(true)}
-          onOpenAndroidExport={() => setIsExportOpen(true)}
         />
 
         {/* Tab Content Body (State preserved across tabs) */}
@@ -85,10 +82,6 @@ export function App() {
           onClose={() => setIsStatsOpen(false)}
         />
 
-        <AndroidProjectExportModal
-          isOpen={isExportOpen}
-          onClose={() => setIsExportOpen(false)}
-        />
       </div>
     </div>
   );

@@ -1,10 +1,12 @@
 package com.grandmaster.chess.data.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.grandmaster.chess.data.datastore.UserPreferencesDataStore
 import com.grandmaster.chess.data.db.dao.*
 import com.grandmaster.chess.data.db.entity.*
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONArray
 import java.time.LocalDate
 
 class LessonRepository(private val lessonDao: LessonDao) {
@@ -24,6 +26,17 @@ class DailyCycleRepository(
     private val dailyDao: DailyDao,
     private val context: Context
 ) {
+    private data class CycleState(
+        var cycle: Int,
+        var sequenceIndex: Int,
+        var shuffledIndices: List<Int>,
+        var lastDateAssigned: String,
+        var currentPuzzleId: String
+    )
+
+    private val prefs: SharedPreferences
+        get() = context.getSharedPreferences("daily_cycle_state_v1", Context.MODE_PRIVATE)
+
     // Generates deterministic shuffled order of 1,000 puzzles for Easy, Medium, Hard
     private fun generateShuffledOrder(cycle: Int, seedOffset: Int, forbiddenFirst: Int?): List<Int> {
         val list = (0 until 1000).toMutableList()
@@ -48,21 +61,78 @@ class DailyCycleRepository(
         return list
     }
 
+    private fun loadCycleState(difficulty: String, seedOffset: Int): CycleState {
+        val key = "cycle_$difficulty"
+        val savedSequence = prefs.getString("${key}_sequence", null)
+        val sequence = savedSequence?.let {
+            runCatching {
+                val json = JSONArray(it)
+                List(json.length()) { index -> json.getInt(index) }
+                    .takeIf { values -> values.size == 1000 && values.toSet().size == 1000 }
+            }.getOrNull()
+        } ?: generateShuffledOrder(1, seedOffset, null)
+
+        return CycleState(
+            cycle = prefs.getInt("${key}_cycle", 1),
+            sequenceIndex = prefs.getInt("${key}_index", -1),
+            shuffledIndices = sequence,
+            lastDateAssigned = prefs.getString("${key}_date", "") ?: "",
+            currentPuzzleId = prefs.getString("${key}_puzzle", "") ?: ""
+        )
+    }
+
+    private fun saveCycleState(difficulty: String, state: CycleState) {
+        val key = "cycle_$difficulty"
+        val sequence = JSONArray()
+        state.shuffledIndices.forEach(sequence::put)
+        prefs.edit()
+            .putInt("${key}_cycle", state.cycle)
+            .putInt("${key}_index", state.sequenceIndex)
+            .putString("${key}_sequence", sequence.toString())
+            .putString("${key}_date", state.lastDateAssigned)
+            .putString("${key}_puzzle", state.currentPuzzleId)
+            .apply()
+    }
+
+    private fun advanceCycle(
+        difficulty: String,
+        prefix: String,
+        date: String,
+        seedOffset: Int,
+        state: CycleState
+    ): String {
+        if (state.lastDateAssigned == date && state.currentPuzzleId.isNotBlank()) {
+            return state.currentPuzzleId
+        }
+
+        var nextIndex = if (state.lastDateAssigned.isBlank()) 0 else state.sequenceIndex + 1
+        if (nextIndex >= 1000) {
+            val previousLast = state.shuffledIndices.last()
+            state.cycle += 1
+            state.shuffledIndices = generateShuffledOrder(state.cycle, seedOffset, previousLast)
+            nextIndex = 0
+        }
+
+        state.sequenceIndex = nextIndex
+        state.lastDateAssigned = date
+        state.currentPuzzleId = "${prefix}_${state.shuffledIndices[nextIndex] + 1}"
+        saveCycleState(difficulty, state)
+        return state.currentPuzzleId
+    }
+
     suspend fun getTodayDailyRecord(date: LocalDate = LocalDate.now()): DailyRecordEntity {
         val dateStr = date.toString()
         val existing = dailyDao.getDailyRecord(dateStr)
         if (existing != null) return existing
 
-        val easyShuffled = generateShuffledOrder(1, 101, null)
-        val medShuffled = generateShuffledOrder(1, 202, null)
-        val hardShuffled = generateShuffledOrder(1, 303, null)
-
-        val dayOfYear = date.dayOfYear % 1000
+        val easyState = loadCycleState("easy", 101)
+        val mediumState = loadCycleState("medium", 202)
+        val hardState = loadCycleState("hard", 303)
         val newRecord = DailyRecordEntity(
             date = dateStr,
-            easyPuzzleId = "daily_easy_${easyShuffled[dayOfYear] + 1}",
-            mediumPuzzleId = "daily_med_${medShuffled[dayOfYear] + 1}",
-            hardPuzzleId = "daily_hard_${hardShuffled[dayOfYear] + 1}"
+            easyPuzzleId = advanceCycle("easy", "daily_easy", dateStr, 101, easyState),
+            mediumPuzzleId = advanceCycle("medium", "daily_med", dateStr, 202, mediumState),
+            hardPuzzleId = advanceCycle("hard", "daily_hard", dateStr, 303, hardState)
         )
         dailyDao.insertOrUpdateDailyRecord(newRecord)
         return newRecord

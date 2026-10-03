@@ -58,12 +58,15 @@ function generateShuffledIndices(seed: number, forbiddenFirstIndex?: number): nu
   return indices;
 }
 
-export function getTodayDateString(): string {
-  const d = new Date();
+export function formatLocalDate(d: Date): string {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+export function getTodayDateString(now: Date = new Date()): string {
+  return formatLocalDate(now);
 }
 
 export class DailyCycleManager {
@@ -281,7 +284,7 @@ export class DailyCycleManager {
     for (let i = 0; i < 365; i++) {
       const checkDate = new Date(today);
       checkDate.setDate(today.getDate() - i);
-      const str = checkDate.toISOString().split('T')[0];
+      const str = formatLocalDate(checkDate);
       const rec = this.state.history[str];
 
       if (rec && rec.isActive) {
@@ -323,7 +326,7 @@ export class DailyCycleManager {
   public debugAdvanceDate(daysAhead: number = 1): DailyDayRecord {
     const d = new Date();
     d.setDate(d.getDate() + daysAhead);
-    const dateStr = d.toISOString().split('T')[0];
+    const dateStr = formatLocalDate(d);
     return this.ensureTodayInitialized(dateStr);
   }
 

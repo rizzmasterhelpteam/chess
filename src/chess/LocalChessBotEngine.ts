@@ -76,11 +76,11 @@ export const BOT_PROFILES: Record<BotLevelId, BotProfile> = {
   },
   'gm': {
     id: 'gm',
-    name: 'Stockfish GM',
+    name: 'Grandmaster Bot',
     rating: 2800,
     title: 'Grandmaster',
     avatar: '♛',
-    description: 'Peak engine calculation with grandmaster opening repertoire and near-flawless endgame conversion.',
+    description: 'Maximum configured local search strength with precise tactical play.',
     tagline: 'Maximum challenge. Zero mercy.',
     color: '#ef4444', // Red
     depth: 5,
@@ -224,7 +224,7 @@ const OPENING_BOOK: Record<string, string[]> = {
   'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b': ['d5', 'Nf6'],
 };
 
-export class StockfishEngineService {
+export class LocalChessBotEngineService {
   private currentCalculationId: number = 0;
 
   public cancelCalculation() {
@@ -465,4 +465,4 @@ export class StockfishEngineService {
   }
 }
 
-export const stockfishEngine = new StockfishEngineService();
+export const LocalChessBotEngine = new LocalChessBotEngineService();

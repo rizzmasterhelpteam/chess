@@ -28,9 +28,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
       tagline: 'Course 02 · Daily Practice',
     },
     {
-      title: 'Offline Stockfish Sparring',
+      title: 'Offline Bot Sparring',
       description:
-        'Challenge tuned offline engine bots from Beginner (600) to Grandmaster with zero latency and full rule validation.',
+        'Challenge tuned offline bots from Beginner (600) to Grandmaster with legal move validation and responsive play.',
       icon: <Swords className="w-8 h-8 text-rose-400" />,
       tagline: 'Course 03 · Engine Sparring',
     },

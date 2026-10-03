@@ -9,5 +9,5 @@
 -keep class com.google.android.gms.ads.** { *; }
 -dontwarn com.google.android.gms.ads.**
 
-# Stockfish UCI engine process
+# Local chess bot implementation
 -keep class com.grandmaster.chess.chess.engine.** { *; }

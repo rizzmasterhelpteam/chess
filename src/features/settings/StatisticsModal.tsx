@@ -2,7 +2,7 @@ import React from 'react';
 import { userProgressRepo } from '../../data/userProgressRepository';
 import { dailyCycleManager } from '../../data/dailyCycleManager';
 import { ALL_LESSONS } from '../../data/lessonsData';
-import { BOT_PROFILES } from '../../chess/StockfishEngine';
+import { BOT_PROFILES } from '../../chess/LocalChessBotEngine';
 import { X, Flame, Trophy, Target, BookOpen } from 'lucide-react';
 
 interface StatisticsModalProps {

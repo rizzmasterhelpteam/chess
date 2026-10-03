@@ -59,7 +59,7 @@ export const InterstitialAdModal: React.FC = () => {
         </div>
         <h3 className="text-xl font-bold text-white mb-2">Learn Chess: Tips, Puzzles & Play</h3>
         <p className="text-sm text-neutral-400 mb-6">
-          Level up your tactical vision with offline puzzles, comprehensive lessons, and Stockfish AI.
+          Level up your tactical vision with offline puzzles, comprehensive lessons, and local bot play.
         </p>
         <div className="bg-neutral-800/80 rounded-xl p-3 text-xs text-neutral-300 border border-neutral-700">
           Natural Break Milestone Reached • Frequency Capped (2-3 min)

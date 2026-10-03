@@ -245,7 +245,10 @@ export const ChessBoardView: React.FC<ChessBoardViewProps> = ({
                   onClick={() => onSelectPromotionPiece(pieceType)}
                   className="aspect-square bg-neutral-800 hover:bg-neutral-700 active:scale-95 border border-white/[0.1] rounded-lg p-2 transition flex items-center justify-center shadow-md"
                 >
-                  <ChessPieceSvg type={pieceType} color={orientation === 'white' ? 'w' : 'b'} />
+                  <ChessPieceSvg
+                    type={pieceType}
+                    color={getSquareData(pendingPromotion.from)?.piece?.color || 'w'}
+                  />
                 </button>
               ))}
             </div>

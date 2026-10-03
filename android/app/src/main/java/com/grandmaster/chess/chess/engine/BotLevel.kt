@@ -57,7 +57,7 @@ enum class BotLevel(
     ),
     BOT_GM(
         id = "gm",
-        displayName = "Stockfish GM",
+        displayName = "Grandmaster Bot",
         rating = 2800,
         title = "Grandmaster",
         avatar = "♛",

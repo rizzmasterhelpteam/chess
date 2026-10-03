@@ -55,12 +55,23 @@ const DEFAULT_SETTINGS: UserSettings = {
   confirmResign: true,
 };
 
-const DEFAULT_TRACK: PermanentTrackProgress = {
-  currentIndex: 1,
-  solvedIds: [],
-  attempts: {},
-  failedAttempts: {},
-};
+function createDefaultTrack(): PermanentTrackProgress {
+  return {
+    currentIndex: 1,
+    solvedIds: [],
+    attempts: {},
+    failedAttempts: {},
+  };
+}
+
+function restoreTrack(value: Partial<PermanentTrackProgress> | undefined): PermanentTrackProgress {
+  return {
+    currentIndex: typeof value?.currentIndex === 'number' ? value.currentIndex : 1,
+    solvedIds: Array.isArray(value?.solvedIds) ? [...value.solvedIds] : [],
+    attempts: { ...(value?.attempts || {}) },
+    failedAttempts: { ...(value?.failedAttempts || {}) },
+  };
+}
 
 export class UserProgressRepository {
   private data: UserProgressData;
@@ -80,9 +91,9 @@ export class UserProgressRepository {
             completedLessons: parsed.completedLessons || [],
             lastLessonId: parsed.lastLessonId || null,
             permanentPuzzles: {
-              easy: { ...DEFAULT_TRACK, ...(parsed.permanentPuzzles?.easy || {}) },
-              medium: { ...DEFAULT_TRACK, ...(parsed.permanentPuzzles?.medium || {}) },
-              hard: { ...DEFAULT_TRACK, ...(parsed.permanentPuzzles?.hard || {}) },
+              easy: restoreTrack(parsed.permanentPuzzles?.easy),
+              medium: restoreTrack(parsed.permanentPuzzles?.medium),
+              hard: restoreTrack(parsed.permanentPuzzles?.hard),
             },
             botStats: parsed.botStats || {
               '600': { gamesPlayed: 0, wins: 0, losses: 0, draws: 0 },
@@ -104,9 +115,9 @@ export class UserProgressRepository {
       completedLessons: [],
       lastLessonId: null,
       permanentPuzzles: {
-        easy: { ...DEFAULT_TRACK },
-        medium: { ...DEFAULT_TRACK },
-        hard: { ...DEFAULT_TRACK },
+        easy: createDefaultTrack(),
+        medium: createDefaultTrack(),
+        hard: createDefaultTrack(),
       },
       botStats: {
         '600': { gamesPlayed: 0, wins: 0, losses: 0, draws: 0 },
@@ -208,9 +219,9 @@ export class UserProgressRepository {
   // Resets
   public resetPuzzleProgress() {
     this.data.permanentPuzzles = {
-      easy: { ...DEFAULT_TRACK },
-      medium: { ...DEFAULT_TRACK },
-      hard: { ...DEFAULT_TRACK },
+      easy: createDefaultTrack(),
+      medium: createDefaultTrack(),
+      hard: createDefaultTrack(),
     };
     this.save();
   }

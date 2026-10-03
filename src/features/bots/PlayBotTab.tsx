@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Square, Move, PieceSymbol } from 'chess.js';
 import {
   BOT_PROFILES,
   BotLevelId,
-  stockfishEngine,
-} from '../../chess/StockfishEngine';
+  LocalChessBotEngine,
+} from '../../chess/LocalChessBotEngine';
 import { ChessBoardView } from '../../components/ChessBoardView';
 import { ChessRulesService, GameStatus } from '../../chess/ChessRules';
 import { userProgressRepo } from '../../data/userProgressRepository';
@@ -37,11 +37,17 @@ export const PlayBotTab: React.FC = () => {
   const [isGameOverModalOpen, setIsGameOverModalOpen] = useState<boolean>(false);
   const [isConfirmResignOpen, setIsConfirmResignOpen] = useState<boolean>(false);
   const [gameRevision, setGameRevision] = useState<number>(0);
+  const gameTokenRef = useRef(0);
+  const serviceRef = useRef<ChessRulesService | null>(null);
+  const gameOverRecordedRef = useRef(false);
 
   const activeBot = BOT_PROFILES[selectedBotId];
   const progressData = userProgressRepo.getData();
 
   const startGame = () => {
+    LocalChessBotEngine.cancelCalculation();
+    const gameToken = ++gameTokenRef.current;
+    gameOverRecordedRef.current = false;
     let pColor: 'w' | 'b' = 'w';
     if (playerColorChoice === 'random') {
       pColor = Math.random() < 0.5 ? 'w' : 'b';
@@ -53,6 +59,7 @@ export const PlayBotTab: React.FC = () => {
     setBoardOrientation(pColor === 'w' ? 'white' : 'black');
 
     const service = new ChessRulesService();
+    serviceRef.current = service;
     setChessService(service);
     setSelectedSquare(null);
     setLegalMoves([]);
@@ -64,15 +71,17 @@ export const PlayBotTab: React.FC = () => {
     setGameRevision((r) => r + 1);
 
     if (pColor === 'b') {
-      triggerBotMove(service, pColor);
+      triggerBotMove(service, pColor, gameToken);
     }
   };
 
-  const triggerBotMove = async (service: ChessRulesService, playerColor: 'w' | 'b') => {
+  const triggerBotMove = async (service: ChessRulesService, playerColor: 'w' | 'b', gameToken = gameTokenRef.current) => {
     setIsBotThinking(true);
     try {
       const fen = service.getFen();
-      let botMove = await stockfishEngine.getBestMove(fen, selectedBotId);
+      let botMove = await LocalChessBotEngine.getBestMove(fen, selectedBotId);
+
+      if (gameToken !== gameTokenRef.current || serviceRef.current !== service) return;
 
       // Fail-safe: if botMove is null or computation aborted, pick top legal move so game never gets stuck
       if (!botMove) {
@@ -107,11 +116,15 @@ export const PlayBotTab: React.FC = () => {
         }
       }
     } finally {
-      setIsBotThinking(false);
+      if (gameToken === gameTokenRef.current && serviceRef.current === service) {
+        setIsBotThinking(false);
+      }
     }
   };
 
   const handleGameOver = (status: GameStatus, playerColor: 'w' | 'b') => {
+    if (gameOverRecordedRef.current) return;
+    gameOverRecordedRef.current = true;
     setIsGameOverModalOpen(true);
     const won = status.winner === playerColor;
     const isDraw = status.winner === 'draw';
@@ -218,7 +231,7 @@ export const PlayBotTab: React.FC = () => {
       if (status.winner) {
         handleGameOver(status, actualPlayerColor);
       } else {
-        triggerBotMove(chessService, actualPlayerColor);
+        triggerBotMove(chessService, actualPlayerColor, gameTokenRef.current);
       }
     }
   };
@@ -231,6 +244,8 @@ export const PlayBotTab: React.FC = () => {
 
   const handleUndo = () => {
     if (!chessService || isBotThinking || isGameOverModalOpen) return;
+    LocalChessBotEngine.cancelCalculation();
+    gameTokenRef.current += 1;
     chessService.undo();
     chessService.undo();
     setLastMove(null);
@@ -252,6 +267,8 @@ export const PlayBotTab: React.FC = () => {
   const confirmResign = () => {
     setIsConfirmResignOpen(false);
     if (!chessService) return;
+    LocalChessBotEngine.cancelCalculation();
+    gameTokenRef.current += 1;
     const status: GameStatus = {
       isCheck: false,
       isCheckmate: false,
@@ -270,7 +287,9 @@ export const PlayBotTab: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      stockfishEngine.cancelCalculation();
+      gameTokenRef.current += 1;
+      serviceRef.current = null;
+      LocalChessBotEngine.cancelCalculation();
     };
   }, []);
 
@@ -471,7 +490,7 @@ export const PlayBotTab: React.FC = () => {
     <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 max-w-4xl mx-auto w-full pb-20">
       <div className="mb-6 pb-4 border-b border-white/[0.08]">
         <span className="text-xs text-[#d4af37] font-semibold uppercase tracking-widest block mb-1">
-          Stockfish Engine Sparring
+          Local Chess Bot Sparring
         </span>
         <h2 className="font-brand text-2xl sm:text-3xl font-bold text-white tracking-wide">
           Offline Chess Bots
