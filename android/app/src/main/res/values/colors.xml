@@ -1,0 +1,8 @@
+<resources>
+    <color name="primary_amber">#FFB800</color>
+    <color name="primary_amber_dark">#D99B00</color>
+    <color name="bg_dark">#0A0A0A</color>
+    <color name="surface_dark">#171717</color>
+    <color name="board_green_light">#EBECCD</color>
+    <color name="board_green_dark">#779556</color>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Learn Chess: Tips, Puzzles &amp; Play</string>
+    <string name="tagline">Tips, Puzzles &amp; Offline Play</string>
+    <string name="tab_learn">Learn</string>
+    <string name="tab_puzzles">Puzzles</string>
+    <string name="tab_play">Play</string>
+    <string name="settings">Settings</string>
+    <string name="statistics">Statistics</string>
+    <string name="streak_format">🔥 %1$d</string>
+
+    <!-- AdMob test unit IDs -->
+    <string name="admob_banner_test_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_interstitial_test_id">ca-app-pub-3940256099942544/1033173712</string>
+</resources>

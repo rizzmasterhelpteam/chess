@@ -1,0 +1,6 @@
+{
+  "name": "Learn Chess: Tips, Puzzles & Play",
+  "description": "Master chess fundamentals, openings, tactics, 450 permanent puzzles, 3,000 daily puzzles, and offline Stockfish AI bots.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
