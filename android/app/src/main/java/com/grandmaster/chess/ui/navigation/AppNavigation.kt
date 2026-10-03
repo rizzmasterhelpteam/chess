@@ -1,6 +1,14 @@
 package com.grandmaster.chess.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Extension
@@ -10,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.grandmaster.chess.R
 import com.grandmaster.chess.ui.features.bots.BotGameScreen
 import com.grandmaster.chess.ui.features.learn.LearnScreen
 import com.grandmaster.chess.ui.features.puzzles.PuzzlesScreen
@@ -26,6 +35,21 @@ fun AppNavigation(navController: NavHostController) {
     val items = listOf(Screen.Learn, Screen.Puzzles, Screen.Play)
 
     Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.chess_logo),
+                            contentDescription = "Learn Chess logo",
+                            modifier = Modifier.size(36.dp)
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Text("Learn Chess", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    }
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, screen ->

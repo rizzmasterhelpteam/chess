@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { userProgressRepo } from '../data/userProgressRepository';
 import { BookOpen, Calendar, Swords, ArrowRight } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
 
 interface OnboardingModalProps {
   isOpen: boolean;
@@ -56,7 +57,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
     <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-5 select-none animate-fade-in">
       <div className="bg-[#12151c] border border-white/[0.1] rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl flex flex-col justify-between min-h-[420px]">
         {/* Skip button */}
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BrandLogo className="w-8 h-8 rounded-lg border border-amber-300/60" />
+            <span className="text-xs font-semibold text-amber-200">Learn Chess</span>
+          </div>
           <button
             onClick={handleSkip}
             className="text-xs text-neutral-400 hover:text-white px-2 py-1 rounded transition"

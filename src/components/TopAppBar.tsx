@@ -1,6 +1,7 @@
 import React from 'react';
 import { Flame, Settings, BarChart2, BookOpen, Puzzle, Swords } from 'lucide-react';
 import { MainTab } from './BottomNavBar';
+import { BrandLogo } from './BrandLogo';
 
 interface TopAppBarProps {
   currentTab: MainTab;
@@ -27,9 +28,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
     <header className="w-full bg-[#0b0e13]/95 backdrop-blur-md border-b border-white/[0.08] px-4 sm:px-6 py-3 flex items-center justify-between select-none z-30">
       {/* Zone 1: Brand Wordmark (Single clean line) */}
       <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-md bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-sm shrink-0">
-          ♚
-        </div>
+        <BrandLogo className="w-8 h-8 rounded-lg border border-amber-300/60 shadow-[0_0_16px_rgba(212,175,55,0.25)] shrink-0" />
         <div className="flex items-baseline gap-1.5 overflow-hidden">
           <span className="font-brand text-sm sm:text-base md:text-lg font-bold text-white tracking-wide whitespace-nowrap">
             Learn Chess:

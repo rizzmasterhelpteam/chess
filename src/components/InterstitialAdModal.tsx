@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { adsManager, DEFAULT_AD_CONFIG } from '../ads/AdsManager';
+import { BrandLogo } from './BrandLogo';
 
 export const InterstitialAdModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,9 +55,7 @@ export const InterstitialAdModal: React.FC = () => {
 
       {/* Main Ad Content */}
       <div className="text-center max-w-sm my-auto bg-neutral-900 border border-neutral-800 p-8 rounded-3xl shadow-2xl">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">
-          ♟️
-        </div>
+        <BrandLogo className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-[0_0_24px_rgba(212,175,55,0.28)]" />
         <h3 className="text-xl font-bold text-white mb-2">Learn Chess: Tips, Puzzles & Play</h3>
         <p className="text-sm text-neutral-400 mb-6">
           Level up your tactical vision with offline puzzles, comprehensive lessons, and local bot play.
